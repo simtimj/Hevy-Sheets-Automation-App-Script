@@ -1,4 +1,4 @@
-function myFunction() {
+function mkHevyRoutine() {
   const exSheetAndTab = SpreadsheetApp.openById("1oBtPYDCDiiXms0cqbfiymrAQ-qqLeI5OI7Ojee8Z_IY").getSheetByName("V4: v3 + weeklies");
 
   /******************************************************************/
@@ -122,12 +122,12 @@ function myFunction() {
       // console.log("ID:", exName, exIdMap[exName])
       
       let fixedEx = {
-           "exercise_template_id": exIdMap[exName],
-           "sets": [
-             { "type": "normal", "reps": 10 },
-             { "type": "normal", "reps": 10 },
-             { "type": "normal", "reps": 10 },
-           ]
+          "exercise_template_id": exIdMap[exName],
+          "sets": [
+            { "type": "normal", "reps": 10 },
+            { "type": "normal", "reps": 10 },
+            { "type": "normal", "reps": 10 },
+          ]
       }
       exercises.push(fixedEx);
     }
@@ -166,7 +166,7 @@ function myFunction() {
       muteHttpExceptions: true
     }
 
-     const response = UrlFetchApp.fetch(url, options);
+    const response = UrlFetchApp.fetch(url, options);
 
     // Log result
     Logger.log("Status: " + response.getResponseCode());
@@ -176,6 +176,38 @@ function myFunction() {
   sendRoutine();
 }
 
+function replaceXwithDate() {
+
+  const formattedDate = () => {
+    let date = new Date();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    // Get day of week
+    const days = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
+    const dayOfWeek = days[date.getDay()];
+
+    let exRoutineName = `${month}/${day}`;
+    let formatted = `${month}/${day} ${dayOfWeek}`;
+
+    return formatted
+  }
+
+  function replaceAllInColumn() {
+    const sheet = exSheetAndTab;
+    const range = sheet.getRange("B2:B100"); // range to search
+    const values = range.getValues();
+
+    for (let i = 0; i < values.length; i++) {
+      if (values[i][0] === "x") {
+        values[i][0] = formattedDate();
+      }
+    }
+
+    range.setValues(values);
+  }
+  replaceAllInColumn();
+}
 
 
 
